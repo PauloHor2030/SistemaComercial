@@ -26,7 +26,7 @@ class Conexao:
     # --- Context manager ---
     def __enter__(self):
         if self._conn is None or self._cursor is None:
-            self.abrir(self._dict_cursor)
+            self.abrir(self._dict_cursor)#77
         return self
 
     def __exit__(self, exc_type, exc, tb):
