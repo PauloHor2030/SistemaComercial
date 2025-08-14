@@ -1,9 +1,11 @@
+# models/venda.py
 from dataclasses import dataclass
 from datetime import datetime
 
 @dataclass
 class Venda:
-    id_venda: int | None
-    id_cliente: int
-    data_venda: datetime | None = None
-    total: float = 0.0
+    m_id_venda: int
+    m_data_hora: datetime | None
+    m_numero_itens: int
+    m_total: float
+    m_fk_id_cliente: int

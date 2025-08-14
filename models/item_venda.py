@@ -1,10 +1,10 @@
+# models/item_venda.py
 from dataclasses import dataclass
 
 @dataclass
 class ItemVenda:
-    id_item: int | None
-    id_venda: int | None
-    id_produto: int
-    quantidade: int
-    preco_unitario: float
-    subtotal: float
+    m_id_item_venda: int
+    m_fk_idvenda: int
+    m_fk_idproduto: int
+    m_quantidade: int
+    m_preco_unitario: float
