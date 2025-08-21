@@ -9,9 +9,9 @@ class VendaDao:
     @staticmethod
     def listar() -> List[dict]:
         sql = """
-            SELECT v.id_venda, v.data_venda, v.total, c.id_cliente, c.nome AS cliente
+            SELECT v.id_venda, v.data_hora, v.total, c.id_cliente, c.nome AS cliente
             FROM t_venda v
-            JOIN t_cliente c ON c.id_cliente = v.id_cliente
+            JOIN t_cliente c ON c.id_cliente = v.fk_id_cliente
             ORDER BY v.id_venda DESC
         """
         with Conexao().abrir(dict_cursor=True) as cx:
@@ -22,17 +22,17 @@ class VendaDao:
     @staticmethod
     def detalhe(id_venda: int) -> Optional[dict]:
         cab_sql = """
-            SELECT v.id_venda, v.data_venda, v.total, c.id_cliente, c.nome AS cliente
+            SELECT v.id_venda, v.data_hora, v.total, c.id_cliente, c.nome AS cliente
             FROM t_venda v
-            JOIN t_cliente c ON c.id_cliente = v.id_cliente
+            JOIN t_cliente c ON c.id_cliente = v.fk_id_cliente
             WHERE v.id_venda = %s
         """
         itens_sql = """
-            SELECT iv.id_item, p.nome AS produto, iv.quantidade, iv.preco_unitario, iv.subtotal
+            SELECT iv.id_item_venda, p.nome_produto AS produto, iv.quantidade, iv.preco_unitario, iv.subtotal
             FROM t_item_venda iv
-            JOIN t_produto p ON p.id_produto = iv.id_produto
-            WHERE iv.id_venda = %s
-            ORDER BY iv.id_item
+            JOIN t_produto p ON p.id_produto = iv.fk_idproduto
+            WHERE iv.fk_idvenda = %s
+            ORDER BY iv.id_item_venda
         """
         with Conexao().abrir(dict_cursor=True) as cx:
             cx.cur.execute(cab_sql, (id_venda,))
@@ -49,13 +49,13 @@ class VendaDao:
         """Insere venda + itens; triggers do banco atualizam total/estoque."""
         with Conexao().abrir() as cx:
             cx.cur.execute(
-                "INSERT INTO t_venda (id_cliente, total) VALUES (%s, %s)",
-                (venda.id_cliente, 0.0),
+                "INSERT INTO t_venda (fk_id_cliente, total) VALUES (%s, %s)",
+                (venda.fk_id_cliente, 0.0),
             )
             id_venda = cx.cur.lastrowid
             for it in itens:
                 cx.cur.execute(
-                    "INSERT INTO t_item_venda (id_venda, id_produto, quantidade, preco_unitario, subtotal) "
+                    "INSERT INTO t_item_venda (fk_idvenda, fk_idproduto, quantidade, preco_unitario, subtotal) "
                     "VALUES (%s, %s, %s, %s, 0)",
                     (id_venda, it.id_produto, it.quantidade, it.preco_unitario),
                 )

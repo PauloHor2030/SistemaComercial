@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Produto:
-    m_id_produto: int
-    m_nome_produto: str
-    m_preco: float
-    m_estoque: int
+    id_produto: int
+    nome_produto: str
+    preco: float
+    estoque: int
